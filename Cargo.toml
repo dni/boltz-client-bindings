@@ -1,0 +1,20 @@
+[package]
+name = "boltz-client-bindings"
+version = "0.1.2"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+boltz-client = "0.1.2"
+pyo3 = "0.21.2"
+
+[profile.release-lto]
+inherits = "release"
+lto = true
+
+[lib]
+# See https://github.com/PyO3/pyo3 for details
+name = "_lib"  # private module to be nested into Python package
+crate-type = ["cdylib"]
+path = "rust/lib.rs"
