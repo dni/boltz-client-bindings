@@ -1,4 +1,4 @@
-from ._lib import lol
+from ._lib import BtcSwapScript, CreateSubmarineResponse, Leaf, SwapTree, Client, new_keys
 
-__all__ = ["lol"]
+__all__ = [BtcSwapScript, CreateSubmarineResponse, Leaf, SwapTree, Client, new_keys]
 

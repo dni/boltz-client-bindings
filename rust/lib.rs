@@ -1,20 +1,20 @@
-use pyo3::prelude::*;
-use boltz_client::swaps::boltz::{SwapStatusRequest};
+use pyo3::prelude::PyModule;
+use pyo3::{pymodule, wrap_pyfunction, Bound, PyResult};
 
-#[pyclass]
-struct SwapStatusRequest {
-    #[pyo3(get, set)]
-    pub id: String,
-}
+use swaps::bitcoin;
 
-#[pyfunction]
-fn lol() -> PyResult<String> {
-    Ok("lol".to_string())
-}
+mod client;
+mod swaps;
+mod types;
+mod utils;
 
 #[pymodule]
-fn _lib(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(lol, m)?)?;
-    m.add_class::<SwapStatusRequest>()?;
+fn _lib(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<bitcoin::BtcSwapScript>()?;
+    m.add_class::<types::submarine::CreateSubmarineResponse>()?;
+    m.add_class::<types::submarine::SwapTree>()?;
+    m.add_class::<types::submarine::Leaf>()?;
+    m.add_class::<client::boltz::Client>()?;
+    m.add_function(wrap_pyfunction!(utils::keys::new_keys, m)?)?;
     Ok(())
 }
