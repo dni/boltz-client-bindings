@@ -9,7 +9,11 @@ edition = "2021"
 bitcoin = { version = "0.32.2", features = ["rand", "base64", "rand-std"] }
 boltz-client = { git = "https://github.com/SatoshiPortal/boltz-rust.git", rev = "feb17d3a3930849fae637b5ec172fcbece303c26" }
 hex = "0.4.3"
-pyo3 = "0.21.2"
+
+[dependencies.pyo3]
+version = "0.21.2"
+# "abi3-py38" tells pyo3 (and maturin) to build using the stable ABI with minimum Python version 3.8
+features = ["abi3-py38"]
 
 [patch.crates-io]
 secp256k1-zkp = { git = "https://github.com/BlockstreamResearch/rust-secp256k1-zkp.git", rev = "60e631c24588a0c9e271badd61959294848c665d" }
@@ -20,6 +24,6 @@ lto = true
 
 [lib]
 # See https://github.com/PyO3/pyo3 for details
-name = "_lib"  # private module to be nested into Python package
+name = "boltz_client_bindings"
 crate-type = ["cdylib"]
-path = "rust/lib.rs"
+path = "src/lib.rs"

@@ -9,7 +9,7 @@ mod types;
 mod utils;
 
 #[pymodule]
-fn _lib(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn boltz_client_bindings(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<bitcoin::BtcSwapScript>()?;
     m.add_class::<types::submarine::CreateSubmarineResponse>()?;
     m.add_class::<types::submarine::SwapTree>()?;

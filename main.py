@@ -1,6 +1,7 @@
 import json
 import boltz_client_bindings
 
+
 client = boltz_client_bindings.Client("http://127.0.0.1:9001/v2")
 
 keys = boltz_client_bindings.new_keys()

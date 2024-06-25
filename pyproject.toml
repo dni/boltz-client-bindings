@@ -1,14 +1,11 @@
 [build-system]
-requires = ["setuptools", "setuptools-rust"]
-build-backend = "setuptools.build_meta"
+requires = ["maturin>=1.6,<2.0"]
+build-backend = "maturin"
 
 [project]
 name = "boltz-client-bindings"
-version = "1.0"
+dynamic = ["version"]
+requires-python = ">=3.9"
 
-[tool.setuptools.packages]
-# Pure Python packages/modules
-find = { where = ["python"] }
-
-[[tool.setuptools-rust.ext-modules]]
-target = "boltz_client_bindings._lib"
+[tool.maturin]
+features = ["pyo3/extension-module"]
