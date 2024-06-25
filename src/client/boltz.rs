@@ -1,7 +1,7 @@
 use boltz_client::swaps::boltzv2::{BoltzApiClientV2, CreateSubmarineRequest};
 use pyo3::{pyclass, pymethods, PyResult};
 
-use crate::types::client::SwapResponse;
+use crate::types::client::{HeightResponse, SwapResponse};
 use crate::types::submarine::CreateSubmarineResponse;
 use crate::utils::errors::handle_rust_error;
 use crate::utils::keys::parse_public_key;
@@ -43,14 +43,15 @@ impl Client {
         Ok(res.into())
     }
 
-
     pub fn get_pairs(&self) -> PyResult<SwapResponse> {
-        let res = handle_rust_error(
-            "could not fetch pairs",
-            self.client.get_pairs()
-        )?;
+        let res = handle_rust_error("could not fetch pairs", self.client.get_pairs())?;
 
         Ok(res.into())
     }
 
+    pub fn get_height(&self) -> PyResult<HeightResponse> {
+        let res = handle_rust_error("could not fetch height", self.client.get_height())?;
+
+        Ok(res.into())
+    }
 }

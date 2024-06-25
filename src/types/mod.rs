@@ -1,2 +1,2 @@
-pub mod submarine;
 pub mod client;
+pub mod submarine;

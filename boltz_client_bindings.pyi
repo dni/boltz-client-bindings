@@ -87,6 +87,13 @@ class Client:
         :return: SwapResponse
         """
 
+    def get_height(self) -> dict:
+        """
+        Get the current block height.
+
+        :return: HeightResponse
+        """
+
 
 def new_keys() -> tuple[bytes, bytes]:
     """
