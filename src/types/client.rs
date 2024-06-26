@@ -1,4 +1,5 @@
-use pyo3::{pyclass, pymethods, PyErr};
+use pyo3::{pyclass, pymethods, Python, PyResult, Bound};
+use pyo3::types::PyDict;
 use std::collections::HashMap;
 
 #[pyclass]
@@ -21,6 +22,18 @@ impl Limits {
             minimal,
             maximal_zero_conf,
         }
+    }
+    pub fn to_dict(&self, py: Python<'_>) -> PyResult<Bound<PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.into().set_item("maximal", self.maximal)?;
+        dict.set_item("maximal", self.maximal)?;
+        dict.set_item("minimal", self.minimal)?;
+        dict.set_item("maximal_zero_conf", self.maximal_zero_conf)?;
+
+        // dict.set_item("maximal", self.maximal).unwrap();
+        // dict.set_item("minimal", cls.minimal).unwrap();
+        // dict.set_item("maximal_zero_conf", cls.maximal_zero_conf).unwrap();
+        Ok(dict)
     }
 }
 
@@ -192,13 +205,12 @@ impl HeightResponse {
     }
 }
 
-impl TryFrom<HeightResponse> for boltz_client::swaps::boltzv2::HeightResponse {
-    type Error = PyErr;
-    fn try_from(value: HeightResponse) -> Result<Self, Self::Error> {
-        Ok(boltz_client::swaps::boltzv2::HeightResponse {
+impl From<HeightResponse> for boltz_client::swaps::boltzv2::HeightResponse {
+    fn from(value: HeightResponse) -> Self {
+        boltz_client::swaps::boltzv2::HeightResponse {
             btc: value.btc,
             lbtc: value.lbtc,
-        })
+        }
     }
 }
 

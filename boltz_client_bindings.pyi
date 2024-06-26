@@ -1,7 +1,16 @@
 from typing import Optional
 
 
-class CreateSubmarineResponse:
+class CreateSubmarineResponse(dict):
+    accept_zero_conf: bool
+    address: str
+    bip21: str
+    claim_public_key: bytes
+    expected_amount: int
+    id: str
+    swap_tree: dict
+    blinding_key: Optional[str]
+
     """
     Response object for a submarine swap.
     """
@@ -29,12 +38,67 @@ class CreateSubmarineResponse:
         :param blinding_key: Blinding key for the swap
         """
 
+class Limits(dict):
+    maximal: int
+    minimal: int
+    maximal_zero_conf: int
 
-class SwapResponse:
+    """
+    Limits object.
+    """
+    def __init__(self, maximal: int, minimal: int, maximal_zero_conf: int) -> None:
+        """
+        Initialize the Limits object.
+
+        :param maximal: Maximal amount
+        :param minimal: Minimal amount
+        :param maximal_zero_conf: Maximal zero conf amount
+        """
+
+class Fees(dict):
+    percentage: float
+    miner_fees: int
+
+    """
+    Fees object.
+    """
+    def __init__(self, percentage: float, miner_fees: int) -> None:
+        """
+        Initialize the Fees object.
+
+        :param percentage: Percentage fee
+        :param miner_fees: Miner fees
+        """
+
+class SwapParams(dict):
+    hash: str
+    rate: float
+    limits: Limits
+    fees: Fees
+
+    """
+    Swap parameters object.
+    """
+    def __init__(self, hash: str, rate: float, limits: Limits, fees: Fees) -> None:
+        """
+        Initialize the SwapParams object.
+
+        :param hash: Hash of the swap
+        :param rate: Rate of the swap
+        :param limits: Limits of the swap
+        :param fees: Fees of the swap
+        """
+
+class SwapResponse(dict):
+    btc: dict[str, SwapParams]
+    lbtc: dict[str, SwapParams]
+
+    __slots__ = ["btc", "lbtc"]
+
     """
     Response object for a get_pairs.
     """
-    def __init__(self, btc: dict[str, dict], lbtc: dict[str, dict]) -> None:
+    def __init__(self, btc: dict[str, SwapParams], lbtc: dict[str, SwapParams]) -> None:
         """
         Initialize the SwapResponse object.
 
@@ -43,7 +107,7 @@ class SwapResponse:
         """
 
 
-class HeightResponse:
+class HeightResponse(dict):
     """
     Response object for a get_height.
     """
@@ -80,14 +144,14 @@ class Client:
         :return: CreateSubmarineResponse
         """
 
-    def get_pairs(self) -> dict:
+    def get_pairs(self) -> SwapResponse:
         """
         Get the available swap pairs.
 
         :return: SwapResponse
         """
 
-    def get_height(self) -> dict:
+    def get_height(self) -> HeightResponse:
         """
         Get the current block height.
 
