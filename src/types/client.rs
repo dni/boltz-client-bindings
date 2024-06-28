@@ -1,6 +1,8 @@
-use pyo3::{pyclass, pymethods, Python, PyResult, Bound};
-use pyo3::types::PyDict;
 use std::collections::HashMap;
+
+use pyo3::{Bound, pyclass, pymethods, PyResult, Python};
+use pyo3::prelude::PyDictMethods;
+use pyo3::types::PyDict;
 
 #[pyclass]
 #[derive(Debug, Clone)]
@@ -23,16 +25,11 @@ impl Limits {
             maximal_zero_conf,
         }
     }
-    pub fn to_dict(&self, py: Python<'_>) -> PyResult<Bound<PyDict>> {
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
         let dict = PyDict::new_bound(py);
-        dict.into().set_item("maximal", self.maximal)?;
         dict.set_item("maximal", self.maximal)?;
         dict.set_item("minimal", self.minimal)?;
         dict.set_item("maximal_zero_conf", self.maximal_zero_conf)?;
-
-        // dict.set_item("maximal", self.maximal).unwrap();
-        // dict.set_item("minimal", cls.minimal).unwrap();
-        // dict.set_item("maximal_zero_conf", cls.maximal_zero_conf).unwrap();
         Ok(dict)
     }
 }
@@ -74,6 +71,12 @@ impl Fees {
             percentage,
             miner_fees,
         }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("percentage", self.percentage)?;
+        dict.set_item("miner_fees", self.miner_fees)?;
+        Ok(dict)
     }
 }
 
@@ -119,6 +122,14 @@ impl SwapParams {
             fees,
         }
     }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("hash", self.hash.clone())?;
+        dict.set_item("rate", self.rate)?;
+        dict.set_item("limits", self.limits.to_dict(py)?)?;
+        dict.set_item("fees", self.fees.to_dict(py)?)?;
+        Ok(dict)
+    }
 }
 
 impl From<boltz_client::swaps::boltzv2::SwapParams> for SwapParams {
@@ -157,6 +168,20 @@ impl SwapResponse {
     #[new]
     pub fn new(btc: HashMap<String, SwapParams>, lbtc: HashMap<String, SwapParams>) -> Self {
         SwapResponse { btc, lbtc }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        let btc = PyDict::new_bound(py);
+        for (key, value) in &self.btc {
+            btc.set_item(key, value.to_dict(py)?)?;
+        }
+        let lbtc = PyDict::new_bound(py);
+        for (key, value) in &self.lbtc {
+            lbtc.set_item(key, value.to_dict(py)?)?;
+        }
+        dict.set_item("btc", btc)?;
+        dict.set_item("lbtc", lbtc)?;
+        Ok(dict)
     }
 }
 

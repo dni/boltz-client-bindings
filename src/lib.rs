@@ -21,5 +21,6 @@ fn boltz_client_bindings(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<types::client::Limits>()?;
     m.add_class::<types::client::SwapParams>()?;
     m.add_function(wrap_pyfunction!(utils::keys::new_keys, m)?)?;
+    m.add_function(wrap_pyfunction!(utils::keys::validate_address, m)?)?;
     Ok(())
 }

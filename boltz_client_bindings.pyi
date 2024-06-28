@@ -38,6 +38,13 @@ class CreateSubmarineResponse(dict):
         :param blinding_key: Blinding key for the swap
         """
 
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
 class Limits(dict):
     maximal: int
     minimal: int
@@ -55,6 +62,13 @@ class Limits(dict):
         :param maximal_zero_conf: Maximal zero conf amount
         """
 
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
 class Fees(dict):
     percentage: float
     miner_fees: int
@@ -68,6 +82,13 @@ class Fees(dict):
 
         :param percentage: Percentage fee
         :param miner_fees: Miner fees
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
         """
 
 class SwapParams(dict):
@@ -89,6 +110,13 @@ class SwapParams(dict):
         :param fees: Fees of the swap
         """
 
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
 class SwapResponse(dict):
     btc: dict[str, SwapParams]
     lbtc: dict[str, SwapParams]
@@ -106,6 +134,13 @@ class SwapResponse(dict):
         :param lbtc: LBTC swap parameters
         """
 
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
 
 class HeightResponse(dict):
     """
@@ -117,6 +152,13 @@ class HeightResponse(dict):
 
         :param btc: BTC height
         :param lbtc: LBTC height
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
         """
 
 
@@ -164,4 +206,15 @@ def new_keys() -> tuple[bytes, bytes]:
     Generate a new key pair for the client.
 
     :return: tuple with private and public key
+    """
+
+
+def validate_address(chain: str, network: str, address: str) -> bool:
+    """
+    Validate an onchain address.
+
+    :param chain: either "BTC" or "L-BTC"
+    :param network: either "mainnet", "testnet" or "regtest"
+    :param address: Bitcoin address
+    :return: bool
     """
