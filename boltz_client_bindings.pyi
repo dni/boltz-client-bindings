@@ -175,14 +175,14 @@ class Client:
         :param referral_id: Optional referral ID
         """
 
-    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str) -> dict:
+    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str, public_key: bytes) -> CreateSubmarineResponse:
         """
         Create a submarine swap.
 
         :param asset_from: Asset to swap from
         :param asset_to: Asset to swap to
         :param invoice: Lightning invoice to pay
-        :param amount: Amount to swap
+        :param public_key: Public key for the swap
         :return: CreateSubmarineResponse
         """
 
@@ -214,7 +214,36 @@ def validate_address(chain: str, network: str, address: str) -> bool:
     Validate an onchain address.
 
     :param chain: either "BTC" or "L-BTC"
-    :param network: either "mainnet", "testnet" or "regtest"
+    :param network: either "main", "testnet" or "regtest"
     :param address: Bitcoin address
     :return: bool
     """
+
+
+class BtcSwapScript:
+    """
+    BtcSwapScript object.
+    """
+    def __init__(self, script: dict) -> None:
+        """
+        Initialize the BtcSwapScript object.
+
+        :param script: Swap script
+        """
+
+    @staticmethod
+    def from_submarine_response(created_response: CreateSubmarineResponse, our_pubkey: bytes) -> BtcSwapScript:
+        """
+        Create a BtcSwapScript object from a submarine response.
+
+        :param created_response: CreateSubmarineResponse
+        :param our_pubkey: Our public key
+        :return: BtcSwapScript
+        """
+
+    def is_submarine(self) -> bool:
+        """
+        Check if the swap is a submarine swap.
+
+        :return: bool
+        """
