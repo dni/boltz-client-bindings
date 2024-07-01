@@ -1,4 +1,6 @@
-use pyo3::{pyclass, pymethods, PyErr};
+use pyo3::{pyclass, pymethods, PyErr, Python, Bound, PyResult};
+use pyo3::prelude::PyDictMethods;
+use pyo3::types::PyDict;
 
 use crate::utils::keys::parse_public_key;
 
@@ -16,6 +18,12 @@ impl Leaf {
     #[new]
     pub fn new(output: String, version: u8) -> Self {
         Leaf { output, version }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("output", self.output.clone())?;
+        dict.set_item("version", self.version)?;
+        Ok(dict)
     }
 }
 
@@ -54,6 +62,12 @@ impl SwapTree {
             claim_leaf,
             refund_leaf,
         }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("claim_leaf", self.claim_leaf.to_dict(py)?)?;
+        dict.set_item("refund_leaf", self.refund_leaf.to_dict(py)?)?;
+        Ok(dict)
     }
 }
 
@@ -119,6 +133,18 @@ impl CreateSubmarineResponse {
             blinding_key,
             swap_tree,
         }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("accept_zero_conf", self.accept_zero_conf)?;
+        dict.set_item("address", self.address.clone())?;
+        dict.set_item("bip21", self.bip21.clone())?;
+        dict.set_item("claim_public_key", self.claim_public_key.clone())?;
+        dict.set_item("expected_amount", self.expected_amount)?;
+        dict.set_item("id", self.id.clone())?;
+        dict.set_item("blinding_key", self.blinding_key.clone())?;
+        dict.set_item("swap_tree", self.swap_tree.to_dict(py)?)?;
+        Ok(dict)
     }
 }
 
