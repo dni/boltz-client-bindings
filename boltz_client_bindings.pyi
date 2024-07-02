@@ -9,7 +9,9 @@ class CreateSubmarineResponse(dict):
     expected_amount: int
     id: str
     swap_tree: dict
+    timeout_block_height: int
     blinding_key: Optional[str]
+    referral_id: Optional[str]
 
     """
     Response object for a submarine swap.
@@ -23,7 +25,9 @@ class CreateSubmarineResponse(dict):
         expected_amount: int,
         id: str,
         swap_tree: dict,
+        timeout_block_height: int,
         blinding_key: Optional[str],
+        referral_id: Optional[str]
     ) -> None:
         """
         Initialize the CreateSubmarineResponse object.
@@ -35,7 +39,9 @@ class CreateSubmarineResponse(dict):
         :param expected_amount: Expected amount for the swap
         :param id: Swap ID
         :param swap_tree: Swap tree
+        :param timeout_block_height: Timeout block height
         :param blinding_key: Blinding key for the swap
+        :param referral_id: Referral ID
         """
 
     def to_dict(self) -> dict:
@@ -45,7 +51,7 @@ class CreateSubmarineResponse(dict):
         :return: dict
         """
 
-class Limits(dict):
+class PairLimits(dict):
     maximal: int
     minimal: int
     maximal_zero_conf: int
@@ -69,7 +75,7 @@ class Limits(dict):
         :return: dict
         """
 
-class Fees(dict):
+class SubmarineFees(dict):
     percentage: float
     miner_fees: int
 
@@ -91,16 +97,16 @@ class Fees(dict):
         :return: dict
         """
 
-class SwapParams(dict):
+class SubmarinePair(dict):
     hash: str
     rate: float
-    limits: Limits
-    fees: Fees
+    limits: PairLimits
+    fees: SubmarineFees
 
     """
     Swap parameters object.
     """
-    def __init__(self, hash: str, rate: float, limits: Limits, fees: Fees) -> None:
+    def __init__(self, hash: str, rate: float, limits: PairLimits, fees: SubmarineFees) -> None:
         """
         Initialize the SwapParams object.
 
@@ -117,16 +123,16 @@ class SwapParams(dict):
         :return: dict
         """
 
-class SwapResponse(dict):
-    btc: dict[str, SwapParams]
-    lbtc: dict[str, SwapParams]
+class GetSubmarinePairsResponse(dict):
+    btc: dict[str, SubmarinePair]
+    lbtc: dict[str, SubmarinePair]
 
     __slots__ = ["btc", "lbtc"]
 
     """
-    Response object for a get_pairs.
+    Response object for a get_submarine_pairs.
     """
-    def __init__(self, btc: dict[str, SwapParams], lbtc: dict[str, SwapParams]) -> None:
+    def __init__(self, btc: dict[str, SubmarinePair], lbtc: dict[str, SubmarinePair]) -> None:
         """
         Initialize the SwapResponse object.
 
@@ -175,22 +181,23 @@ class Client:
         :param referral_id: Optional referral ID
         """
 
-    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str, public_key: bytes) -> CreateSubmarineResponse:
+    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str, pair_hash: str, public_key: bytes) -> CreateSubmarineResponse:
         """
         Create a submarine swap.
 
         :param asset_from: Asset to swap from
         :param asset_to: Asset to swap to
         :param invoice: Lightning invoice to pay
+        :param pair_hash: Hash of the swap pair
         :param public_key: Public key for the swap
         :return: CreateSubmarineResponse
         """
 
-    def get_pairs(self) -> SwapResponse:
+    def get_submarine_pairs(self) -> GetSubmarinePairsResponse:
         """
         Get the available swap pairs.
 
-        :return: SwapResponse
+        :return: GetSubmarinePairsResponse
         """
 
     def get_height(self) -> HeightResponse:

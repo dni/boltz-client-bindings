@@ -6,7 +6,7 @@ use pyo3::types::PyDict;
 
 #[pyclass]
 #[derive(Debug, Clone)]
-pub struct Limits {
+pub struct PairLimits {
     #[pyo3(get)]
     pub maximal: u64,
     #[pyo3(get)]
@@ -16,10 +16,10 @@ pub struct Limits {
 }
 
 #[pymethods]
-impl Limits {
+impl PairLimits {
     #[new]
     pub fn new(maximal: u64, minimal: u64, maximal_zero_conf: u64) -> Self {
-        Limits {
+        PairLimits {
             maximal,
             minimal,
             maximal_zero_conf,
@@ -34,9 +34,9 @@ impl Limits {
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::Limits> for Limits {
-    fn from(value: boltz_client::swaps::boltzv2::Limits) -> Self {
-        Limits {
+impl From<boltz_client::swaps::boltz::PairLimits> for PairLimits {
+    fn from(value: boltz_client::swaps::boltz::PairLimits) -> Self {
+        PairLimits {
             maximal: value.maximal,
             minimal: value.minimal,
             maximal_zero_conf: value.maximal_zero_conf,
@@ -44,9 +44,9 @@ impl From<boltz_client::swaps::boltzv2::Limits> for Limits {
     }
 }
 
-impl From<Limits> for boltz_client::swaps::boltzv2::Limits {
-    fn from(value: Limits) -> Self {
-        boltz_client::swaps::boltzv2::Limits {
+impl From<PairLimits> for boltz_client::swaps::boltz::PairLimits {
+    fn from(value: PairLimits) -> Self {
+        boltz_client::swaps::boltz::PairLimits {
             maximal: value.maximal,
             minimal: value.minimal,
             maximal_zero_conf: value.maximal_zero_conf,
@@ -56,7 +56,7 @@ impl From<Limits> for boltz_client::swaps::boltzv2::Limits {
 
 #[pyclass]
 #[derive(Debug, Clone)]
-pub struct Fees {
+pub struct SubmarineFees {
     #[pyo3(get)]
     pub percentage: f64,
     #[pyo3(get)]
@@ -64,10 +64,10 @@ pub struct Fees {
 }
 
 #[pymethods]
-impl Fees {
+impl SubmarineFees {
     #[new]
     pub fn new(percentage: f64, miner_fees: u64) -> Self {
-        Fees {
+        SubmarineFees {
             percentage,
             miner_fees,
         }
@@ -80,18 +80,18 @@ impl Fees {
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::Fees> for Fees {
-    fn from(value: boltz_client::swaps::boltzv2::Fees) -> Self {
-        Fees {
+impl From<boltz_client::swaps::boltz::SubmarineFees> for SubmarineFees {
+    fn from(value: boltz_client::swaps::boltz::SubmarineFees) -> Self {
+        SubmarineFees {
             percentage: value.percentage,
             miner_fees: value.miner_fees,
         }
     }
 }
 
-impl From<Fees> for boltz_client::swaps::boltzv2::Fees {
-    fn from(value: Fees) -> Self {
-        boltz_client::swaps::boltzv2::Fees {
+impl From<SubmarineFees> for boltz_client::swaps::boltz::SubmarineFees {
+    fn from(value: SubmarineFees) -> Self {
+        boltz_client::swaps::boltz::SubmarineFees {
             percentage: value.percentage,
             miner_fees: value.miner_fees,
         }
@@ -100,22 +100,22 @@ impl From<Fees> for boltz_client::swaps::boltzv2::Fees {
 
 #[pyclass]
 #[derive(Debug, Clone)]
-pub struct SwapParams {
+pub struct SubmarinePair {
     #[pyo3(get)]
     pub hash: String,
     #[pyo3(get)]
     pub rate: f64,
     #[pyo3(get)]
-    pub limits: Limits,
+    pub limits: PairLimits,
     #[pyo3(get)]
-    pub fees: Fees,
+    pub fees: SubmarineFees,
 }
 
 #[pymethods]
-impl SwapParams {
+impl SubmarinePair {
     #[new]
-    pub fn new(hash: String, rate: f64, limits: Limits, fees: Fees) -> Self {
-        SwapParams {
+    pub fn new(hash: String, rate: f64, limits: PairLimits, fees: SubmarineFees) -> Self {
+        SubmarinePair {
             hash,
             rate,
             limits,
@@ -132,9 +132,9 @@ impl SwapParams {
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::SwapParams> for SwapParams {
-    fn from(value: boltz_client::swaps::boltzv2::SwapParams) -> Self {
-        SwapParams {
+impl From<boltz_client::swaps::boltz::SubmarinePair> for SubmarinePair {
+    fn from(value: boltz_client::swaps::boltz::SubmarinePair) -> Self {
+        SubmarinePair {
             hash: value.hash,
             rate: value.rate,
             limits: value.limits.into(),
@@ -143,9 +143,9 @@ impl From<boltz_client::swaps::boltzv2::SwapParams> for SwapParams {
     }
 }
 
-impl From<SwapParams> for boltz_client::swaps::boltzv2::SwapParams {
-    fn from(value: SwapParams) -> Self {
-        boltz_client::swaps::boltzv2::SwapParams {
+impl From<SubmarinePair> for boltz_client::swaps::boltz::SubmarinePair {
+    fn from(value: SubmarinePair) -> Self {
+        boltz_client::swaps::boltz::SubmarinePair {
             hash: value.hash,
             rate: value.rate,
             limits: value.limits.into(),
@@ -156,18 +156,18 @@ impl From<SwapParams> for boltz_client::swaps::boltzv2::SwapParams {
 
 #[pyclass]
 #[derive(Debug, Clone)]
-pub struct SwapResponse {
+pub struct GetSubmarinePairsResponse {
     #[pyo3(get)]
-    pub btc: HashMap<String, SwapParams>,
+    pub btc: HashMap<String, SubmarinePair>,
     #[pyo3(get)]
-    pub lbtc: HashMap<String, SwapParams>,
+    pub lbtc: HashMap<String, SubmarinePair>,
 }
 
 #[pymethods]
-impl SwapResponse {
+impl GetSubmarinePairsResponse {
     #[new]
-    pub fn new(btc: HashMap<String, SwapParams>, lbtc: HashMap<String, SwapParams>) -> Self {
-        SwapResponse { btc, lbtc }
+    pub fn new(btc: HashMap<String, SubmarinePair>, lbtc: HashMap<String, SubmarinePair>) -> Self {
+        GetSubmarinePairsResponse { btc, lbtc }
     }
     pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
         let dict = PyDict::new_bound(py);
@@ -185,8 +185,8 @@ impl SwapResponse {
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::SwapResponse> for SwapResponse {
-    fn from(value: boltz_client::swaps::boltzv2::SwapResponse) -> Self {
+impl From<boltz_client::swaps::boltz::GetSubmarinePairsResponse> for GetSubmarinePairsResponse {
+    fn from(value: boltz_client::swaps::boltz::GetSubmarinePairsResponse) -> Self {
         let mut btc = HashMap::new();
         for (key, value) in value.btc {
             btc.insert(key, value.into());
@@ -195,12 +195,12 @@ impl From<boltz_client::swaps::boltzv2::SwapResponse> for SwapResponse {
         for (key, value) in value.lbtc {
             lbtc.insert(key, value.into());
         }
-        SwapResponse { btc, lbtc }
+        GetSubmarinePairsResponse { btc, lbtc }
     }
 }
 
-impl From<SwapResponse> for boltz_client::swaps::boltzv2::SwapResponse {
-    fn from(value: SwapResponse) -> Self {
+impl From<GetSubmarinePairsResponse> for boltz_client::swaps::boltz::GetSubmarinePairsResponse {
+    fn from(value: GetSubmarinePairsResponse) -> Self {
         let mut btc = HashMap::new();
         for (key, value) in value.btc {
             btc.insert(key, value.into());
@@ -209,7 +209,7 @@ impl From<SwapResponse> for boltz_client::swaps::boltzv2::SwapResponse {
         for (key, value) in value.lbtc {
             lbtc.insert(key, value.into());
         }
-        boltz_client::swaps::boltzv2::SwapResponse { btc, lbtc }
+        boltz_client::swaps::boltz::GetSubmarinePairsResponse { btc, lbtc }
     }
 }
 
@@ -230,17 +230,17 @@ impl HeightResponse {
     }
 }
 
-impl From<HeightResponse> for boltz_client::swaps::boltzv2::HeightResponse {
+impl From<HeightResponse> for boltz_client::swaps::boltz::HeightResponse {
     fn from(value: HeightResponse) -> Self {
-        boltz_client::swaps::boltzv2::HeightResponse {
+        boltz_client::swaps::boltz::HeightResponse {
             btc: value.btc,
             lbtc: value.lbtc,
         }
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::HeightResponse> for HeightResponse {
-    fn from(value: boltz_client::swaps::boltzv2::HeightResponse) -> Self {
+impl From<boltz_client::swaps::boltz::HeightResponse> for HeightResponse {
+    fn from(value: boltz_client::swaps::boltz::HeightResponse) -> Self {
         HeightResponse {
             btc: value.btc,
             lbtc: value.lbtc,

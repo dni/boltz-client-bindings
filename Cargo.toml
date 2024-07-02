@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 bitcoin = { version = "0.32.2", features = ["rand", "base64", "rand-std"] }
-boltz-client = { git = "https://github.com/SatoshiPortal/boltz-rust.git", rev = "f0351a61e7339acd97484e60658b3ee43baec4d8" }
+boltz-client = { git = "https://github.com/dni/boltz-rust.git", rev = "2344b876cdb5a023fc223d2abd20bc0022787c8a" }
 hex = "0.4.3"
 
 [dependencies.pyo3]

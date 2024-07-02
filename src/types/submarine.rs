@@ -27,17 +27,17 @@ impl Leaf {
     }
 }
 
-impl From<Leaf> for boltz_client::swaps::boltzv2::Leaf {
+impl From<Leaf> for boltz_client::swaps::boltz::Leaf {
     fn from(value: Leaf) -> Self {
-        boltz_client::swaps::boltzv2::Leaf {
+        boltz_client::swaps::boltz::Leaf {
             output: value.output,
             version: value.version,
         }
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::Leaf> for Leaf {
-    fn from(value: boltz_client::swaps::boltzv2::Leaf) -> Self {
+impl From<boltz_client::swaps::boltz::Leaf> for Leaf {
+    fn from(value: boltz_client::swaps::boltz::Leaf) -> Self {
         Leaf {
             output: value.output,
             version: value.version,
@@ -71,17 +71,17 @@ impl SwapTree {
     }
 }
 
-impl From<SwapTree> for boltz_client::swaps::boltzv2::SwapTree {
+impl From<SwapTree> for boltz_client::swaps::boltz::SwapTree {
     fn from(value: SwapTree) -> Self {
-        boltz_client::swaps::boltzv2::SwapTree {
+        boltz_client::swaps::boltz::SwapTree {
             claim_leaf: value.claim_leaf.into(),
             refund_leaf: value.refund_leaf.into(),
         }
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::SwapTree> for SwapTree {
-    fn from(value: boltz_client::swaps::boltzv2::SwapTree) -> Self {
+impl From<boltz_client::swaps::boltz::SwapTree> for SwapTree {
+    fn from(value: boltz_client::swaps::boltz::SwapTree) -> Self {
         SwapTree {
             claim_leaf: value.claim_leaf.into(),
             refund_leaf: value.refund_leaf.into(),
@@ -108,6 +108,10 @@ pub struct CreateSubmarineResponse {
     pub blinding_key: Option<String>,
     #[pyo3(get)]
     pub swap_tree: SwapTree,
+    #[pyo3(get)]
+    pub timeout_block_height: u64,
+    #[pyo3(get)]
+    pub referral_id: Option<String>,
 }
 
 #[pymethods]
@@ -121,6 +125,8 @@ impl CreateSubmarineResponse {
         expected_amount: u64,
         id: String,
         swap_tree: SwapTree,
+        timeout_block_height: u64,
+        referral_id: Option<String>,
         blinding_key: Option<String>,
     ) -> Self {
         CreateSubmarineResponse {
@@ -130,8 +136,10 @@ impl CreateSubmarineResponse {
             claim_public_key,
             expected_amount,
             id,
-            blinding_key,
             swap_tree,
+            timeout_block_height,
+            referral_id,
+            blinding_key,
         }
     }
     pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
@@ -148,16 +156,18 @@ impl CreateSubmarineResponse {
     }
 }
 
-impl TryFrom<CreateSubmarineResponse> for boltz_client::swaps::boltzv2::CreateSubmarineResponse {
+impl TryFrom<CreateSubmarineResponse> for boltz_client::swaps::boltz::CreateSubmarineResponse {
     type Error = PyErr;
 
     fn try_from(value: CreateSubmarineResponse) -> Result<Self, Self::Error> {
-        Ok(boltz_client::swaps::boltzv2::CreateSubmarineResponse {
+        Ok(boltz_client::swaps::boltz::CreateSubmarineResponse {
             id: value.id,
             bip21: value.bip21,
             address: value.address,
             expected_amount: value.expected_amount,
             accept_zero_conf: value.accept_zero_conf,
+            referral_id: value.referral_id,
+            timeout_block_height: value.timeout_block_height,
             claim_public_key: parse_public_key(value.claim_public_key)?,
             blinding_key: value.blinding_key,
             swap_tree: value.swap_tree.into(),
@@ -165,8 +175,8 @@ impl TryFrom<CreateSubmarineResponse> for boltz_client::swaps::boltzv2::CreateSu
     }
 }
 
-impl From<boltz_client::swaps::boltzv2::CreateSubmarineResponse> for CreateSubmarineResponse {
-    fn from(value: boltz_client::swaps::boltzv2::CreateSubmarineResponse) -> Self {
+impl From<boltz_client::swaps::boltz::CreateSubmarineResponse> for CreateSubmarineResponse {
+    fn from(value: boltz_client::swaps::boltz::CreateSubmarineResponse) -> Self {
         CreateSubmarineResponse {
             id: value.id,
             bip21: value.bip21,
@@ -175,6 +185,8 @@ impl From<boltz_client::swaps::boltzv2::CreateSubmarineResponse> for CreateSubma
             accept_zero_conf: value.accept_zero_conf,
             claim_public_key: value.claim_public_key.to_bytes(),
             blinding_key: value.blinding_key,
+            referral_id: value.referral_id,
+            timeout_block_height: value.timeout_block_height,
             swap_tree: value.swap_tree.into(),
         }
     }
