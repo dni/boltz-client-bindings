@@ -228,13 +228,14 @@ dependencies = [
 [[package]]
 name = "boltz-client"
 version = "0.1.3"
-source = "git+https://github.com/SatoshiPortal/boltz-rust.git?rev=f0351a61e7339acd97484e60658b3ee43baec4d8#f0351a61e7339acd97484e60658b3ee43baec4d8"
+source = "git+https://github.com/dni/boltz-rust.git?rev=2344b876cdb5a023fc223d2abd20bc0022787c8a#2344b876cdb5a023fc223d2abd20bc0022787c8a"
 dependencies = [
  "bip39",
  "bitcoin 0.31.2",
  "electrum-client",
  "elements",
  "env_logger",
+ "hex",
  "lightning-invoice",
  "log",
  "native-tls",

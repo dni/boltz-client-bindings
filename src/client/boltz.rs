@@ -1,14 +1,15 @@
-use boltz_client::swaps::boltzv2::{BoltzApiClientV2, CreateSubmarineRequest};
+use boltz_client::boltz::CreateSubmarineRequest;
+use boltz_client::boltz::BoltzApiClientV2 as BoltzApiClient;
 use pyo3::{pyclass, pymethods, PyResult};
 
-use crate::types::client::{HeightResponse, SwapResponse};
+use crate::types::client::{GetSubmarinePairsResponse, HeightResponse};
 use crate::types::submarine::CreateSubmarineResponse;
 use crate::utils::errors::handle_rust_error;
 use crate::utils::keys::parse_public_key;
 
 #[pyclass]
 pub struct Client {
-    client: BoltzApiClientV2,
+    client: BoltzApiClient,
     referral_id: Option<String>,
 }
 
@@ -18,8 +19,9 @@ impl Client {
     pub fn new(base_url: String, referral_id: Option<String>) -> Self {
         Client {
             referral_id,
-            client: BoltzApiClientV2::new(&base_url),
+            client: BoltzApiClient::new(&base_url),
         }
+
     }
 
     pub fn create_submarine_swap(
@@ -28,6 +30,7 @@ impl Client {
         to: String,
         invoice: String,
         refund_public_key: Vec<u8>,
+        pair_hash: Option<String>,
     ) -> PyResult<CreateSubmarineResponse> {
         let res = handle_rust_error(
             "could not create submarine swap",
@@ -35,6 +38,7 @@ impl Client {
                 to,
                 from,
                 invoice,
+                pair_hash,
                 referral_id: self.referral_id.clone(),
                 refund_public_key: parse_public_key(refund_public_key)?,
             }),
@@ -43,8 +47,8 @@ impl Client {
         Ok(res.into())
     }
 
-    pub fn get_pairs(&self) -> PyResult<SwapResponse> {
-        let res = handle_rust_error("could not fetch pairs", self.client.get_pairs())?;
+    pub fn get_submarine_pairs(&self) -> PyResult<GetSubmarinePairsResponse> {
+        let res = handle_rust_error("could not fetch pairs", self.client.get_submarine_pairs())?;
 
         Ok(res.into())
     }
