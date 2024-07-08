@@ -51,6 +51,121 @@ class CreateSubmarineResponse(dict):
         :return: dict
         """
 
+class ReverseLimits(dict):
+    maximal: int
+    minimal: int
+
+    """
+    ReverseLimits object.
+    """
+    def __init__(self, maximal: int, minimal: int) -> None:
+        """
+        Initialize the Limits object.
+
+        :param maximal: Maximal amount
+        :param minimal: Minimal amount
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+class ReverseFees(dict):
+    percentage: float
+    miner_fees: PairMinerFees
+
+    """
+    ReverseFees object.
+    """
+    def __init__(self, percentage: float, miner_fees: PairMinerFees) -> None:
+        """
+        Initialize the ReverseFees object.
+
+        :param percentage: Percentage fee
+        :param miner_fees: Miner fees
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+class ReversePair(dict):
+    hash: str
+    rate: float
+    limits: ReverseLimits
+    fees: ReverseFees
+
+    """
+    ReversePair object.
+    """
+    def __init__(self, hash: str, rate: float, limits: ReverseLimits, fees: ReverseFees) -> None:
+        """
+        Initialize the ReversePair object.
+
+        :param hash: Hash of the swap
+        :param rate: Rate of the swap
+        :param limits: Limits of the swap
+        :param fees: Fees of the swap
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+class GetReversePairsResponse(dict):
+    btc: dict[str, ReversePair]
+
+    __slots__ = ["btc"]
+
+    """
+    Response object for a get_reverse_pairs.
+    """
+    def __init__(self, btc: dict[str, ReversePair], lbtc: dict[str, ReversePair]) -> None:
+        """
+        Initialize the GetReversePairsResponse object.
+
+        :param btc: BTC swap parameters
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+class PairMinerFees(dict):
+    lockup: int
+    claim: int
+
+    """
+    PairMinerFees object.
+    """
+    def __init__(self, lockup: int, claim: int) -> None:
+        """
+        Initialize the PairMinerFees object.
+
+        :param lockup: Lockup fees
+        :param claim: Claim fees
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+
 class PairLimits(dict):
     maximal: int
     minimal: int

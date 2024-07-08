@@ -4,6 +4,243 @@ use pyo3::{Bound, pyclass, pymethods, PyResult, Python};
 use pyo3::prelude::PyDictMethods;
 use pyo3::types::PyDict;
 
+
+#[pyclass]
+#[derive(Debug, Clone)]
+pub struct ReverseLimits {
+    #[pyo3(get)]
+    pub maximal: u64,
+    #[pyo3(get)]
+    pub minimal: u64,
+}
+
+
+#[pymethods]
+impl ReverseLimits {
+    #[new]
+    pub fn new(maximal: u64, minimal: u64) -> Self {
+        ReverseLimits {
+            maximal,
+            minimal,
+        }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("maximal", self.maximal)?;
+        dict.set_item("minimal", self.minimal)?;
+        Ok(dict)
+    }
+}
+
+impl From<boltz_client::swaps::boltz::ReverseLimits> for ReverseLimits {
+    fn from(value: boltz_client::swaps::boltz::ReverseLimits) -> Self {
+        ReverseLimits {
+            maximal: value.maximal,
+            minimal: value.minimal,
+        }
+    }
+}
+
+impl From<ReverseLimits> for boltz_client::swaps::boltz::ReverseLimits {
+    fn from(value: ReverseLimits) -> Self {
+        boltz_client::swaps::boltz::ReverseLimits {
+            maximal: value.maximal,
+            minimal: value.minimal,
+        }
+    }
+}
+
+#[pyclass]
+#[derive(Debug, Clone)]
+pub struct ReverseFees {
+    #[pyo3(get)]
+    pub percentage: f64,
+    #[pyo3(get)]
+    pub miner_fees: PairMinerFees,
+}
+
+#[pymethods]
+impl ReverseFees {
+    #[new]
+    pub fn new(percentage: f64, miner_fees: PairMinerFees) -> Self {
+        ReverseFees {
+            percentage,
+            miner_fees,
+        }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("percentage", self.percentage)?;
+        dict.set_item("miner_fees", self.miner_fees.to_dict(py)?)?;
+        Ok(dict)
+    }
+}
+
+impl From<boltz_client::swaps::boltz::ReverseFees> for ReverseFees {
+    fn from(value: boltz_client::swaps::boltz::ReverseFees) -> Self {
+        ReverseFees {
+            percentage: value.percentage,
+            miner_fees: value.miner_fees.into(),
+        }
+    }
+}
+
+impl From<ReverseFees> for boltz_client::swaps::boltz::ReverseFees {
+    fn from(value: ReverseFees) -> Self {
+        boltz_client::swaps::boltz::ReverseFees {
+            percentage: value.percentage,
+            miner_fees: value.miner_fees.into(),
+        }
+    }
+}
+
+
+#[pyclass]
+#[derive(Debug, Clone)]
+pub struct ReversePair {
+    #[pyo3(get)]
+    pub hash: String,
+    #[pyo3(get)]
+    pub rate: f64,
+    #[pyo3(get)]
+    pub limits: ReverseLimits,
+    #[pyo3(get)]
+    pub fees: ReverseFees,
+}
+
+#[pymethods]
+impl ReversePair {
+    #[new]
+    pub fn new(hash: String, rate: f64, limits: ReverseLimits, fees: ReverseFees) -> Self {
+        ReversePair {
+            hash,
+            rate,
+            limits,
+            fees,
+        }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("hash", self.hash.clone())?;
+        dict.set_item("rate", self.rate)?;
+        dict.set_item("limits", self.limits.to_dict(py)?)?;
+        dict.set_item("fees", self.fees.to_dict(py)?)?;
+        Ok(dict)
+    }
+}
+
+impl From<boltz_client::swaps::boltz::ReversePair> for ReversePair {
+    fn from(value: boltz_client::swaps::boltz::ReversePair) -> Self {
+        ReversePair {
+            hash: value.hash,
+            rate: value.rate,
+            limits: value.limits.into(),
+            fees: value.fees.into(),
+        }
+    }
+}
+
+impl From<ReversePair> for boltz_client::swaps::boltz::ReversePair {
+    fn from(value: ReversePair) -> Self {
+        boltz_client::swaps::boltz::ReversePair {
+            hash: value.hash,
+            rate: value.rate,
+            limits: value.limits.into(),
+            fees: value.fees.into(),
+        }
+    }
+}
+
+#[pyclass]
+#[derive(Debug, Clone)]
+pub struct GetReversePairsResponse {
+    #[pyo3(get)]
+    pub btc: HashMap<String, ReversePair>,
+}
+
+#[pymethods]
+impl GetReversePairsResponse {
+    #[new]
+    pub fn new(btc: HashMap<String, ReversePair>) -> Self {
+        GetReversePairsResponse { btc }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        let btc = PyDict::new_bound(py);
+        for (key, value) in &self.btc {
+            btc.set_item(key, value.to_dict(py)?)?;
+        }
+        dict.set_item("btc", btc)?;
+        Ok(dict)
+    }
+}
+
+impl From<boltz_client::swaps::boltz::GetReversePairsResponse> for GetReversePairsResponse {
+    fn from(value: boltz_client::swaps::boltz::GetReversePairsResponse) -> Self {
+        let mut btc = HashMap::new();
+        for (key, value) in value.btc {
+            btc.insert(key, value.into());
+        }
+        GetReversePairsResponse { btc }
+    }
+}
+
+impl From<GetReversePairsResponse> for boltz_client::swaps::boltz::GetReversePairsResponse {
+    fn from(value: GetReversePairsResponse) -> Self {
+        let mut btc = HashMap::new();
+        for (key, value) in value.btc {
+            btc.insert(key, value.into());
+        }
+        boltz_client::swaps::boltz::GetReversePairsResponse { btc }
+    }
+}
+
+
+#[pyclass]
+#[derive(Debug, Clone)]
+pub struct PairMinerFees {
+    #[pyo3(get)]
+    pub lockup: u64,
+    #[pyo3(get)]
+    pub claim: u64,
+}
+
+#[pymethods]
+impl PairMinerFees {
+    #[new]
+    pub fn new(lockup: u64, claim: u64) -> Self {
+        PairMinerFees {
+            lockup,
+            claim,
+        }
+    }
+    pub fn to_dict<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let dict = PyDict::new_bound(py);
+        dict.set_item("lockup", self.lockup)?;
+        dict.set_item("claim", self.claim)?;
+        Ok(dict)
+    }
+}
+
+impl From<boltz_client::swaps::boltz::PairMinerFees> for PairMinerFees {
+    fn from(value: boltz_client::swaps::boltz::PairMinerFees) -> Self {
+        PairMinerFees {
+            lockup: value.lockup,
+            claim: value.claim,
+        }
+    }
+}
+
+impl From<PairMinerFees> for boltz_client::swaps::boltz::PairMinerFees {
+    fn from(value: PairMinerFees) -> Self {
+        boltz_client::swaps::boltz::PairMinerFees {
+            lockup: value.lockup,
+            claim: value.claim,
+        }
+    }
+}
+
+
 #[pyclass]
 #[derive(Debug, Clone)]
 pub struct PairLimits {
