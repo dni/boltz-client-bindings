@@ -13,7 +13,7 @@ hex = "0.4.3"
 [dependencies.pyo3]
 version = "0.21.2"
 # "abi3-py38" tells pyo3 (and maturin) to build using the stable ABI with minimum Python version 3.8
-features = ["abi3-py38"]
+# features = ["abi3-py38"]
 
 [patch.crates-io]
 secp256k1-zkp = { git = "https://github.com/BlockstreamResearch/rust-secp256k1-zkp.git", rev = "60e631c24588a0c9e271badd61959294848c665d" }

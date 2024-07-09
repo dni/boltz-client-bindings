@@ -105,13 +105,13 @@ pub struct CreateSubmarineResponse {
     #[pyo3(get)]
     pub id: String,
     #[pyo3(get)]
-    pub blinding_key: Option<String>,
-    #[pyo3(get)]
     pub swap_tree: SwapTree,
     #[pyo3(get)]
     pub timeout_block_height: u64,
     #[pyo3(get)]
     pub referral_id: Option<String>,
+    #[pyo3(get)]
+    pub blinding_key: Option<String>,
 }
 
 #[pymethods]

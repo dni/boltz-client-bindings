@@ -47,8 +47,37 @@ impl Client {
         Ok(res.into())
     }
 
+    pub fn create_reverse_swap(
+        &self,
+        from: String,
+        to: String,
+        invoice: String,
+        refund_public_key: Vec<u8>,
+        pair_hash: Option<String>,
+    ) -> PyResult<CreateReverseResponse> {
+        let res = handle_rust_error(
+            "could not create reverse swap",
+            self.client.post_swap_req(&CreateReverseRequest {
+                to,
+                from,
+                invoice,
+                pair_hash,
+                referral_id: self.referral_id.clone(),
+                refund_public_key: parse_public_key(refund_public_key)?,
+            }),
+        )?;
+
+        Ok(res.into())
+    }
+
     pub fn get_submarine_pairs(&self) -> PyResult<GetSubmarinePairsResponse> {
-        let res = handle_rust_error("could not fetch pairs", self.client.get_submarine_pairs())?;
+        let res = handle_rust_error("could not fetch submarine ubmarinepairs", self.client.get_submarine_pairs())?;
+
+        Ok(res.into())
+    }
+
+    pub fn get_reverse_pairs(&self) -> PyResult<GetSReversePairsResponse> {
+        let res = handle_rust_error("could not fetch reverse pairs", self.client.get_reverse_pairs())?;
 
         Ok(res.into())
     }

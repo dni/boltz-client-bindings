@@ -1,6 +1,51 @@
 from typing import Optional
 
 
+class CreateReverseResponse(dict):
+    id: str
+    invoice: str
+    swap_tree: dict
+    lockup_address: str
+    refund_public_key: bytes
+    timeout_block_height: int
+    onchain_amount: int
+    blinding_key: Optional[str]
+
+    """
+    Response object for a reverse swap.
+    """
+    def __init__(
+        self,
+        id: str,
+        invoice: str,
+        swap_tree: dict,
+        lockup_address: str,
+        refund_public_key: bytes,
+        timeout_block_height: int,
+        onchain_amount: int,
+        blinding_key: Optional[str]
+    ) -> None:
+        """
+        Initialize the CreateReverseResponse object.
+
+        :param id: Swap ID
+        :param invoice: Lightning invoice
+        :param swap_tree: Swap tree
+        :param lockup_address: Lockup address
+        :param refund_public_key: Public key for refund
+        :param timeout_block_height: Timeout block height
+        :param onchain_amount: Onchain amount
+        :param blinding_key: Blinding key
+        """
+
+    def to_dict(self) -> dict:
+        """
+        Convert the response to a dictionary.
+
+        :return: dict
+        """
+
+
 class CreateSubmarineResponse(dict):
     accept_zero_conf: bool
     address: str
@@ -296,16 +341,28 @@ class Client:
         :param referral_id: Optional referral ID
         """
 
-    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str, pair_hash: str, public_key: bytes) -> CreateSubmarineResponse:
+    def create_submarine_swap(self, asset_from: str, asset_to: str, invoice: str, public_key: bytes, pair_hash: Optional[str] = None) -> CreateSubmarineResponse:
         """
         Create a submarine swap.
 
         :param asset_from: Asset to swap from
         :param asset_to: Asset to swap to
         :param invoice: Lightning invoice to pay
-        :param pair_hash: Hash of the swap pair
         :param public_key: Public key for the swap
+        :param pair_hash: Hash of the swap pair
         :return: CreateSubmarineResponse
+        """
+
+    def create_reverse_swap(self, asset_from: str, asset_to: str, amount: int, public_key: bytes, pair_hash: Optional[str] = None) -> CreateReverseResponse:
+        """
+        Create a reverse swap.
+
+        :param asset_from: Asset to swap from
+        :param asset_to: Asset to swap to
+        :param amount: Amount to swap
+        :param public_key: Public key for the swap
+        :param pair_hash: Hash of the swap pair
+        :return: CreateReverseResponse
         """
 
     def get_submarine_pairs(self) -> GetSubmarinePairsResponse:
@@ -313,6 +370,13 @@ class Client:
         Get the available swap pairs.
 
         :return: GetSubmarinePairsResponse
+        """
+
+    def get_reverse_pairs(self) -> GetReversePairsResponse:
+        """
+        Get the available reverse swap pairs.
+
+        :return: GetReversePairsResponse
         """
 
     def get_height(self) -> HeightResponse:
