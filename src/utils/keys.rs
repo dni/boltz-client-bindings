@@ -17,6 +17,20 @@ pub fn parse_public_key(public_key: Vec<u8>) -> Result<PublicKey, PyErr> {
     }
 }
 
+pub fn parse_preimage_hash(preimage_hash: Vec<u8>) -> Result<[u8; 32], PyErr> {
+    if preimage_hash.len() != 32 {
+        return Err(to_python_error::<PyValueError, _>(
+            "preimage hash must be 32 bytes long",
+            "preimage hash must be 32 bytes long",
+        ));
+    }
+
+    let mut hash = [0u8; 32];
+    hash.copy_from_slice(&preimage_hash);
+
+    Ok(hash)
+}
+
 #[pyfunction]
 pub fn new_keys() -> (Vec<u8>, Vec<u8>) {
     let secp = bitcoin::secp256k1::Secp256k1::new();

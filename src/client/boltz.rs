@@ -1,11 +1,12 @@
-use boltz_client::boltz::CreateSubmarineRequest;
+use boltz_client::boltz::{CreateReverseRequest, CreateSubmarineRequest};
 use boltz_client::boltz::BoltzApiClientV2 as BoltzApiClient;
 use pyo3::{pyclass, pymethods, PyResult};
 
 use crate::types::client::{GetSubmarinePairsResponse, HeightResponse};
 use crate::types::submarine::CreateSubmarineResponse;
+use crate::types::reverse::CreateReverseResponse;
 use crate::utils::errors::handle_rust_error;
-use crate::utils::keys::parse_public_key;
+use crate::utils::keys::{parse_preimage_hash, parse_public_key};
 
 #[pyclass]
 pub struct Client {
@@ -49,21 +50,26 @@ impl Client {
 
     pub fn create_reverse_swap(
         &self,
-        from: String,
-        to: String,
-        invoice: String,
-        refund_public_key: Vec<u8>,
-        pair_hash: Option<String>,
+        invoice_amount: u32,
+        asset_from: String,
+        asset_to: String,
+        preimage_hash: Vec<u8>,
+        claim_public_key: Vec<u8>,
+        address: Option<String>,
+        address_signature: Option<String>,
+        referral_id: Option<String>,
     ) -> PyResult<CreateReverseResponse> {
         let res = handle_rust_error(
             "could not create reverse swap",
-            self.client.post_swap_req(&CreateReverseRequest {
-                to,
-                from,
-                invoice,
-                pair_hash,
-                referral_id: self.referral_id.clone(),
-                refund_public_key: parse_public_key(refund_public_key)?,
+            self.client.post_reverse_req(CreateReverseRequest {
+                invoice_amount,
+                from: asset_from,
+                to: asset_to,
+                preimage_hash: parse_preimage_hash(preimage_hash)?,
+                claim_public_key: parse_public_key(claim_public_key)?,
+                address,
+                address_signature,
+                referral_id,
             }),
         )?;
 
