@@ -1,8 +1,12 @@
 use pyo3::{pyclass, pymethods, PyErr, Python, Bound, PyResult};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::PyDictMethods;
 use pyo3::types::PyDict;
 
-use crate::utils::keys::parse_public_key;
+use crate::utils::keys::{parse_chain, parse_preimage, parse_public_key};
+use crate::utils::errors::to_python_error;
+
+
 
 #[pyclass]
 #[derive(Debug, Clone)]
@@ -105,13 +109,13 @@ pub struct CreateSubmarineResponse {
     #[pyo3(get)]
     pub id: String,
     #[pyo3(get)]
-    pub blinding_key: Option<String>,
-    #[pyo3(get)]
     pub swap_tree: SwapTree,
     #[pyo3(get)]
     pub timeout_block_height: u64,
     #[pyo3(get)]
     pub referral_id: Option<String>,
+    #[pyo3(get)]
+    pub blinding_key: Option<String>,
 }
 
 #[pymethods]
