@@ -1,5 +1,7 @@
 use bitcoin::{key::rand::thread_rng, secp256k1::Keypair};
 use boltz_client::{PublicKey, ToHex};
+use boltz_client::util::secrets::Preimage;
+use boltz_client::network::Chain;
 use pyo3::exceptions::PyValueError;
 use pyo3::{pyfunction, PyErr};
 
@@ -17,18 +19,29 @@ pub fn parse_public_key(public_key: Vec<u8>) -> Result<PublicKey, PyErr> {
     }
 }
 
-pub fn parse_preimage_hash(preimage_hash: Vec<u8>) -> Result<[u8; 32], PyErr> {
-    if preimage_hash.len() != 32 {
-        return Err(to_python_error::<PyValueError, _>(
-            "preimage hash must be 32 bytes long",
-            "preimage hash must be 32 bytes long",
-        ));
+pub fn parse_preimage(preimage: Vec<u8>) -> Result<Preimage, PyErr> {
+    let preimage_str = hex::encode(preimage);
+    match Preimage::from_str(preimage_str.as_str()) {
+        Ok(k) => Ok(k),
+        Err(err) => {
+            return Err(to_python_error::<PyValueError, _>(
+                "could not parse preimage",
+                err,
+            ));
+        }
     }
+}
 
-    let mut hash = [0u8; 32];
-    hash.copy_from_slice(&preimage_hash);
-
-    Ok(hash)
+pub fn parse_chain(chain: String) -> Result<Chain, PyErr> {
+    match chain.as_str() {
+        "BTC" => {
+            Ok(Chain::Bitcoin)
+        },
+        "L-BTC" => {
+            Ok(Chain::Liquid)
+        },
+        _ => Err(PyValueError::new_err("invalid chain"))
+    }
 }
 
 #[pyfunction]

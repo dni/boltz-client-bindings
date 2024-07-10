@@ -12,7 +12,7 @@ mod utils;
 fn boltz_client_bindings(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<bitcoin::BtcSwapScript>()?;
     m.add_class::<types::submarine::CreateSubmarineResponse>()?;
-    m.add_class::<types::submarine::CreateReverseResponse>()?;
+    m.add_class::<types::reverse::CreateReverseResponse>()?;
     m.add_class::<types::submarine::SwapTree>()?;
     m.add_class::<types::submarine::Leaf>()?;
     m.add_class::<client::boltz::Client>()?;

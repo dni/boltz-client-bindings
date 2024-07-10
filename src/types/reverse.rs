@@ -1,9 +1,11 @@
 use pyo3::{pyclass, pymethods, PyErr, Python, Bound, PyResult};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::PyDictMethods;
 use pyo3::types::PyDict;
 
-use crate::utils::keys::parse_public_key;
+use crate::utils::keys::{parse_preimage, parse_public_key, parse_chain};
 use crate::types::submarine::SwapTree;
+use crate::utils::errors::to_python_error;
 
 #[pyclass]
 #[derive(Debug, Clone)]
@@ -28,6 +30,7 @@ pub struct CreateReverseResponse {
 
 #[pymethods]
 impl CreateReverseResponse {
+
     #[new]
     pub fn new(
         id: String,
@@ -48,6 +51,22 @@ impl CreateReverseResponse {
             timeout_block_height,
             onchain_amount,
             blinding_key,
+        }
+    }
+
+    pub fn validate(&self, preimage: Vec<u8>, our_pubkey: Vec<u8>, chain: String) -> PyResult<()> {
+        let response = boltz_client::swaps::boltz::CreateReverseResponse::try_from(self.clone())?;
+        let _preimage = parse_preimage(preimage)?;
+        let _pubkey = parse_public_key(our_pubkey)?;
+        let _chain = parse_chain(chain)?;
+        match response.validate(&_preimage, &_pubkey, _chain) {
+            Ok(_) => Ok(()),
+            Err(err) => {
+                return Err(to_python_error::<PyValueError, _>(
+                    "could not validate response",
+                    err,
+                ));
+            }
         }
     }
 

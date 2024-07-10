@@ -1,8 +1,12 @@
 use pyo3::{pyclass, pymethods, PyErr, Python, Bound, PyResult};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::PyDictMethods;
 use pyo3::types::PyDict;
 
-use crate::utils::keys::parse_public_key;
+use crate::utils::keys::{parse_chain, parse_preimage, parse_public_key};
+use crate::utils::errors::to_python_error;
+
+
 
 #[pyclass]
 #[derive(Debug, Clone)]

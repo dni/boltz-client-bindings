@@ -38,6 +38,16 @@ class CreateReverseResponse(dict):
         :param blinding_key: Blinding key
         """
 
+    def validate(self, preimage: bytes, our_pubkey: bytes, chain: str) -> bool:
+        """
+        Validate the response.
+
+        :param preimage: Preimage
+        :param our_pubkey: Our public key
+        :param chain: Chain
+        :return: bool
+        """
+
     def to_dict(self) -> dict:
         """
         Convert the response to a dictionary.
@@ -353,15 +363,17 @@ class Client:
         :return: CreateSubmarineResponse
         """
 
-    def create_reverse_swap(self, asset_from: str, asset_to: str, amount: int, public_key: bytes, pair_hash: Optional[str] = None) -> CreateReverseResponse:
+    def create_reverse_swap(self, invoice_amount: int, asset_from: str, asset_to: str, preimage_hash: bytes, claim_public_key: bytes, address: Optional[str] = None, address_signature: Optional[str] = None) -> CreateReverseResponse:
         """
         Create a reverse swap.
 
+        :param invoice_amount: Invoice amount
         :param asset_from: Asset to swap from
         :param asset_to: Asset to swap to
-        :param amount: Amount to swap
-        :param public_key: Public key for the swap
-        :param pair_hash: Hash of the swap pair
+        :param preimage_hash: Hash of the preimage
+        :param claim_public_key: Public key for the claim
+        :param address: Optional address
+        :param address_signature: Optional address signature
         :return: CreateReverseResponse
         """
 
